@@ -187,7 +187,13 @@ EcobeePlatform.prototype.update = function (callback) {
       data += chunk;
     });
     response.on('end', function () {
-      var reply = JSON.parse(data);
+      try {
+        var reply = JSON.parse(data); 
+      } catch (error) {
+        this.log.debug(error);
+        this.log.info("Error with returned JSON | retrying");
+        return;
+      }
       this.log.debug(reply);
       var status = reply['status'] || {'code' : 'default'};
       switch (status['code']) {
